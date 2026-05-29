@@ -17,97 +17,99 @@
  */
 
 #include <stdint.h>
+#include <stm32f4xx.h>
+
 
 #if !defined(__SOFT_FP__) && defined(__ARM_FP)
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
-/*Variables*/
-
-/*SEMANA 00*/
-
-/*Ejercicio-0.1*/
-
-uint8_t my_variable = 0;
-
-/*Ejercicio-0.2*/
-
-uint8_t dec = 0;
-uint8_t hex = 0;
-uint8_t bin = 0;
-
-/*Ejercicio 0.3*/
-
-uint8_t a = 0;
-uint16_t b = 0;
-uint32_t c = 0;
-uint8_t d = 0;
-
-uint8_t e = 257;
-
-/*Ejercicio 0.4*/
-
-uint8_t a1 = 0;
-int8_t b1 = 0;
-int8_t c1 = 0;
-
-/*Ejercicio 0.5*/
-
-int8_t x = 0;
-uint8_t y = 0;
-
-/*Ejercicio 0.6*/
-
-result = 0;
-
-/*Ejercicio 0.7*/
-
-uint8_t x1 = 0;
-
-/*Ejercicio 0.8*/
-
-uint8_t a2 = 0;
-uint8_t b2 = 0;
-uint8_t c2 = 0;
-
-uint8_t r1 = 0;
-uint8_t r2 = 0;
-uint8_t r3 = 0;
-uint8_t r4 = 0;
-
-/*SEMANA 01*/
-
-/*Ejercicio 1.1*/
-
-uint8_t a3 = 0;
-uint8_t b3 = 0;
-uint8_t div_result = 0;
-uint8_t mod_result = 0;
-uint8_t mul_result = 0;
-
-/*Ejercicio 1.2*/
-
-uint8_t x2 = 0;
-uint8_t y2 = 0;
-uint8_t sum = 0;
-
-/*Ejercicio 1.3*/
-
-uint8_t val = 3;
-
-/*Ejercicio 1.4*/
-
-uint8_t z1 = 5;
-uint8_t z2 = 0;
-uint8_t z3 = 5;
-
-uint8_t result1 = 0;
-uint8_t result2 = 0;
-uint8_t result3 = 0;
-
-/*Ejercicio 1.5*/
-
-/*Ejercicio 1.6*/
+///*Variables*/
+//
+///*SEMANA 00*/
+//
+///*Ejercicio-0.1*/
+//
+//uint8_t my_variable = 0;
+//
+///*Ejercicio-0.2*/
+//
+//uint8_t dec = 0;
+//uint8_t hex = 0;
+//uint8_t bin = 0;
+//
+///*Ejercicio 0.3*/
+//
+//uint8_t a = 0;
+//uint16_t b = 0;
+//uint32_t c = 0;
+//uint8_t d = 0;
+//
+//uint8_t e = 257;
+//
+///*Ejercicio 0.4*/
+//
+//uint8_t a1 = 0;
+//int8_t b1 = 0;
+//int8_t c1 = 0;
+//
+///*Ejercicio 0.5*/
+//
+//int8_t x = 0;
+//uint8_t y = 0;
+//
+///*Ejercicio 0.6*/
+//
+//result = 0;
+//
+///*Ejercicio 0.7*/
+//
+//uint8_t x1 = 0;
+//
+///*Ejercicio 0.8*/
+//
+//uint8_t a2 = 0;
+//uint8_t b2 = 0;
+//uint8_t c2 = 0;
+//
+//uint8_t r1 = 0;
+//uint8_t r2 = 0;
+//uint8_t r3 = 0;
+//uint8_t r4 = 0;
+//
+///*SEMANA 01*/
+//
+///*Ejercicio 1.1*/
+//
+//uint8_t a3 = 0;
+//uint8_t b3 = 0;
+//uint8_t div_result = 0;
+//uint8_t mod_result = 0;
+//uint8_t mul_result = 0;
+//
+///*Ejercicio 1.2*/
+//
+//uint8_t x2 = 0;
+//uint8_t y2 = 0;
+//uint8_t sum = 0;
+//
+///*Ejercicio 1.3*/
+//
+//uint8_t val = 3;
+//
+///*Ejercicio 1.4*/
+//
+//uint8_t z1 = 5;
+//uint8_t z2 = 0;
+//uint8_t z3 = 5;
+//
+//uint8_t result1 = 0;
+//uint8_t result2 = 0;
+//uint8_t result3 = 0;
+//
+///*Ejercicio 1.5*/
+//
+///*Ejercicio 1.6*/
 
 
 
@@ -263,27 +265,45 @@ int main(void)
 //		{
 //
 //		}
+//
+//		/*Ejercicio 1.6*/
+//
+//	    uint8_t suma = 0;
+//	    uint8_t counter = 1;
+//	    uint16_t suma1 = 0;
+//	    uint8_t counter1 = 1;
+//
+//
+//		while(counter <= 10)
+//		{
+//			suma = suma + counter;
+//			counter++;
+//		}
+//
+//
+//		while(counter1 <= 100)
+//		{
+//			suma1 = suma1 + counter1;
+//			counter1++;
+//		}
 
-		/*Ejercicio 1.6*/
+	 /*Trabajo de clase*/
 
-	    uint8_t suma = 0;
-	    uint8_t counter = 1;
-	    uint16_t suma1 = 0;
-	    uint8_t counter1 = 1;
+	/*Activando la señal de reloj*/
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
 
+	/*Configurando el pin A5 como salida*/
+	GPIOA->MODER |= (0b10 << GPIO_MODER_MODE5_Pos);
 
-		while(counter <= 10)
-		{
-			suma = suma + counter;
-			counter++;
-		}
+	/*Configurando el pin A5 como salida push-pull*/
+	GPIOA->OTYPER &= ~(GPIO_OTYPER_OT5);
 
+	/*Configuracion de la velocidad como fast*/
+	GPIOA->OSPEEDR |= (0b10 << GPIO_OSPEEDR_OSPEED5_Pos);
 
-		while(counter1 <= 100)
-		{
-			suma1 = suma1 + counter1;
-			counter1++;
-		}
+	/*Encendemos el LED*/
+	GPIOA->ODR |= GPIO_ODR_OD5;
+
 
 
 
