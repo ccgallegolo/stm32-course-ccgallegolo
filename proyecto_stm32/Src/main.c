@@ -17,6 +17,8 @@
  */
 
 #include <stdint.h>
+#include <stm32f4xx.h>
+
 
 #if !defined(__SOFT_FP__) && defined(__ARM_FP)
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
@@ -114,6 +116,7 @@ uint8_t result3 = 0;
 int main(void)
 {
 
+<<<<<<< HEAD
 ///*SEMANA 00*/
 //
 //	/*Ejercicio-0.1*/
@@ -263,6 +266,157 @@ int main(void)
 //		{
 //
 //		}
+=======
+/*SEMANA 00*/
+
+	/*Ejercicio-0.1*/
+
+	uint8_t my_variable = 42;
+
+	/*Ejercicio-0.2*/
+
+	uint8_t dec = 65;
+	uint8_t hex = 0x41;
+	uint8_t bin = 0b01000001;
+
+	/*Ejercicio 0.3*/
+
+	uint8_t a = 255; /* prediccion: 11111111 */
+	uint16_t b = 255; /* prediccion: 11111111 */
+	uint32_t c = 255; /* prediccion: 11111111 */
+	uint8_t d = 256; /* prediccion: 00000000 */
+
+	uint8_t e = 257; /* prediccion: 00000001 */
+
+	/*Ejercicio 0.4*/
+
+	uint8_t a1 = 200; /* prediccion: 11001000*/
+	int8_t b1 = 200; /* prediccion: 11001000*/
+	int8_t c1 = -1; /* prediccion: 11111111*/
+
+	/*Ejercicio 0.5*/
+
+	int8_t x = 127; /* prediccion: -128*/
+	x = x + 1;
+
+	uint8_t y = 255; /* prediccion: 0*/
+		y = y + 1;
+
+		/*Ejercicio 0.6*/
+
+		result = 0x0F + 0x01; /* prediccion: 16*/
+		result = 0xFF + 0x01; /* prediccion: 256*/
+		result = 0xA0 + 0x5F; /* prediccion: 255*/
+		result = 0xA0 + 0x60; /* prediccion: 256*/
+
+		/*Ejercicio 0.7*/
+
+		x1 = 0x01; /* prediccion: 1*/
+		x1 = 0x02; /* prediccion: 2*/
+		x1 = 0x04; /* prediccion: 4*/
+		x1 = 0x08; /* prediccion: 8*/
+		x1 = 0x10; /* prediccion: 16*/
+		x1 = 0x20; /* prediccion: 32*/
+		x1 = 0x40; /* prediccion: 64*/
+		x1 = 0x80; /* prediccion: 128*/
+
+		/*Ejercicio 0.8*/
+
+		uint8_t a2 = 5;
+		uint8_t b2 = 0;
+		uint8_t c2 = 255;
+
+		uint8_t r1 = !a2; /* prediccion: 0*/
+		uint8_t r2 = !b2; /* prediccion: 1*/
+		uint8_t r3 = !c2; /* prediccion: 0*/
+		uint8_t r4 = ~c2; /* prediccion: 0, ya que es el complemento de c2 */
+
+		uint8_t r5 = ~a2; /* prediccion: 250, ya que es el complemento de a2*/
+
+/*SEMANA 01*/
+
+		/*Ejercicio 1.1*/
+
+		uint8_t a3 = 17;
+		uint8_t b3 = 5;
+		uint8_t div_result = a3 / b3;  /* prediccion: 3, ya que es division entera*/
+		uint8_t mod_result = a3 % b3;  /* prediccion: 2, ya que es el sobrante de la diviscion entera*/
+		uint8_t mul_result = a3 * b3;  /* prediccion: 85, multiplicacion de las dos variables*/
+
+		/*Ejercicio 1.2*/
+
+		uint8_t x2 = 200;
+		uint8_t y2 = 100;
+		uint8_t sum = x2 + y2; /* prediccion: 44, ya que el contenedor de 8 bites es de 0-255, por lo que 300 - 256 es igual a 44*/
+
+		/*Ejercicio 1.3*/
+
+		uint8_t left1 = val << 1;
+		uint8_t left2 = val << 2;
+		uint8_t left3 = val << 3;
+		uint8_t right1 = val >> 1;
+
+		/*Ejercicio 1.4*/
+
+		uint8_t z1 = 5;
+		uint8_t z2 = 0;
+		uint8_t z3 = 5;
+
+		uint8_t result1 = 0;
+		uint8_t result2 = 0;
+		uint8_t result3 = 0;
+
+		if (z1)
+		{
+			result1 = 1;
+		}
+		else
+		{
+			result1 = 0;
+		}
+
+		if (z2)
+		{
+			result2 = 1;
+		}
+		else
+		{
+			result2 = 0;
+		}
+
+		if (z1 == z3)
+		{
+			result3 = 1;
+		}
+		else
+		{
+			result3 = 0;
+		}
+
+		/*Ejercicio 1.5*/
+
+		uint8_t counter = 0;
+
+		for(counter = 0; counter < 10; counter += 1)
+		{
+		volatile uint8_t paso = counter;
+		}
+
+		for(counter = 0; counter < 10; counter += 2)
+		{
+		volatile uint8_t paso = counter;
+		}
+
+		for(counter = 10; counter > 0; counter --)
+		{
+		volatile uint8_t paso = counter;
+		}
+
+		for(counter = 10; counter < 5; counter += 1)
+		{
+
+		}
+>>>>>>> week-02
 
 		/*Ejercicio 1.6*/
 
@@ -285,8 +439,75 @@ int main(void)
 			counter1++;
 		}
 
+<<<<<<< HEAD
+=======
+	 /*Trabajo de clase*/
+
+	/*Activando la señal de reloj*/
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+
+	/*Configurando el pin A5 como salida*/
+	GPIOA->MODER |= (0b10 << GPIO_MODER_MODE5_Pos);
+
+	/*Configurando el pin A5 como salida push-pull*/
+	GPIOA->OTYPER &= ~(GPIO_OTYPER_OT5);
+
+	/*Configuracion de la velocidad como fast*/
+	GPIOA->OSPEEDR |= (0b10 << GPIO_OSPEEDR_OSPEED5_Pos);
+
+	/*Encendemos el LED*/
+	GPIOA->ODR |= GPIO_ODR_OD5;
+
+    /*Configurando el TIM3*/
+	/*encendemos las señal de reloj*/
+	/*Limpiamos la posicion TIM3EN*/
+	RCC->APB1ENR &=  ~(RCC_APB1ENR_TIM3EN);
+	/*Activamos la señal de reloj*/
+	RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
+
+	/* Configuramos del precaler para que el CNT se incremene cada 0.1ms*/
+	TIM3->PSC = (1600 - 1);
+
+	/*Cargamos el valor en el ARR para que se generen interrupciones cada 325ms*/
+	TIM3->ARR = (3250 - 1);
+
+	/*Reiniciamos el contador*/
+	TIM3->CNT = 0;
+
+	/*Limpiamos la bandera de la interrupcion debida a una actualizacion*/
+	TIM3->SR &= ~(TIM_SR_UIF);
+
+	/*Activamos la interrupcion tipo update-event*/
+	/*Limpiamos la posicion*/
+	TIM3->DIER &= ~(TIM_DIER_UIE);
+
+	/*Activamos la interrupcion*/
+	TIM->DIER |= (TIM_DIER_UIE);
+
+	/*Matriculando la interrupcion TIM3 en el NVIC, para que sea reconocida*/
+	_NVIC_EnableIRQ(TIM3_IRQn);
+>>>>>>> week-02
 
 
     /* Loop forever */
 	while(1){}
+<<<<<<< HEAD
+=======
+}
+
+
+/* Funcion ISR para el TIM*/
+/*En general, toda funcion ISR no retorna nada (void) y no recibe parametro*/
+void TIM3_IRQHandler(void){
+
+	/* Verificar que genero la interrupcion*/
+	if(TIM3->SR && TIM_SRUIF){
+		/*Realizamos una accion en respuesta a la interrupcion en este caso el toogle*/
+		->ODR ^= GPIO_ODR_OD; // |= OR, &=AND, ⁼ XOR
+
+		/*Bajamos la bandera de la interrupcion*/
+		TIM3->SR &= ~(TIM_SR_UIF);
+	}
+
+>>>>>>> week-02
 }
