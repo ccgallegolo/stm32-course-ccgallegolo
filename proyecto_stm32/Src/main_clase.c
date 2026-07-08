@@ -1,66 +1,98 @@
-/*
- * main_clase.c
- *
- *  Created on: May 29, 2026
- *      Author: cristian
- */
-
-
-
 #include <stdint.h>
-#include <stm32f4xx.h>
+#include "stm32f411xe.h"
+#include "stm32f4xx.h"
 
+typedef enum{
+	BLUE,
+	RED,
+	GREEN
+}states_t;
 
-#if !defined(__SOFT_FP__) && defined(__ARM_FP)
-  #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
-#endif
+// variables
+states_t state = GREEN;
 
-   // Función de retardo simple basada en software
-    void delay_ms(uint32_t milisegundos) {
-        // Este factor (~16000) es aproximado para un reloj interno de 16 MHz.
-        // Si tu procesador va más rápido, necesitarás aumentar este valor.
-        uint32_t ciclos = milisegundos * 16000;
-        for (uint32_t i = 0; i < ciclos; i++) {
-            __NOP(); // Instrucción que no hace nada, solo consume 1 ciclo de reloj
-        }
-    }
+// headers
+void configuration(void);
+void changeState(void);
+void TIM3_IRQHandler(void);
 
-int main(void)
-{
+int main(void){
+	configuration();
 
-	   /* Trabajo de clase */
+	while(1){
 
-	    /* 1. Activando la señal de reloj para el puerto GPIOC */
-	    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
+	}
+}
 
-	    /* 2. Configurando el pin C8 como salida */
-	    // Primero limpiamos los dos bits correspondientes al pin 8
-	    GPIOC->MODER &= ~(GPIO_MODER_MODE8_Msk);
-	    // Luego asignamos 0b01 (Salida de propósito general)
-	    GPIOC->MODER |= (0b01 << GPIO_MODER_MODE8_Pos);
+void configuration(void){
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
+	RCC->APB1ENR &= ~(RCC_APB1ENR_TIM3EN);
+	RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
 
-	    /* 3. Configurando el pin C8 como salida push-pull (0 = Push-Pull) */
-	    GPIOC->OTYPER &= ~(GPIO_OTYPER_OT8);
+	// configure PC8
+	GPIOC->MODER |= (0b01 << GPIO_MODER_MODE8_Pos);
+	GPIOC->OTYPER &= ~(0b1 << GPIO_OTYPER_OT8_Pos);				// push-pull
+	GPIOC->OSPEEDR |= (0b10 << GPIO_OSPEEDR_OSPEED8_Pos);		// fast
+	GPIOC->ODR |= (0b1 << GPIO_ODR_OD8_Pos);					// initial value 1
 
-	    /* 4. Configuración de la velocidad como fast (0b10 = Fast speed) */
-	    // Primero limpiamos los bits de velocidad para el pin 8
-	    GPIOC->OSPEEDR &= ~(GPIO_OSPEEDR_OSPEED8_Msk);
-	    // Luego asignamos la velocidad rápida
-	    GPIOC->OSPEEDR |= (0b10 << GPIO_OSPEEDR_OSPEED8_Pos);
+	// configure PC6
+	GPIOC->MODER |= (0b01 << GPIO_MODER_MODE6_Pos);
+	GPIOC->OTYPER &= ~(0b1 << GPIO_OTYPER_OT6_Pos);				// push-pull
+	GPIOC->OSPEEDR |= (0b10 << GPIO_OSPEEDR_OSPEED6_Pos);		// fast
+	GPIOC->ODR |= (0b1 << GPIO_ODR_OD6_Pos);					// initial value 1
 
-	    /* 5. Encendemos el LED poniendo en alto el pin C8 */
-	    GPIOC->ODR |= GPIO_ODR_OD8;
+	// configure PC5
+	GPIOC->MODER |= (0b01 << GPIO_MODER_MODE5_Pos);
+	GPIOC->OTYPER &= ~(0b1 << GPIO_OTYPER_OT5_Pos);				// push-pull
+	GPIOC->OSPEEDR |= (0b10 << GPIO_OSPEEDR_OSPEED5_Pos);		// fast
+	GPIOC->ODR |= (0b1 << GPIO_ODR_OD5_Pos);					// initial value 1
 
-        /* Bucle infinito de parpadeo */
-while (1) {
-       // Alterna (Togglera) el estado del pin PC8
-       // Si estaba encendido lo apaga, si estaba apagado lo enciende
-        GPIOC->ODR ^= GPIO_ODR_OD8;
+	// configure TIM3
+	TIM3->ARR = (16000 - 1);				// set autorreload to 3250 * 0.1 ms = 325 ms
+	TIM3->PSC = (1600 -1);					// set prescaler to 0.1 ms
+	TIM3->CNT = 0;							// reset counter
+	TIM3->SR &= ~(TIM_SR_UIF);				// clean interruption flag
+	TIM3->DIER &= ~(TIM_DIER_UIE);			// clean interruption enable
+	TIM3->DIER |= TIM_DIER_UIE;				// set interruption enable
+	/* The NVIC must know that an interrupt from the TIM3 is enabled */
+	__NVIC_EnableIRQ(TIM3_IRQn);		// found in the /Includes/.../Core/Include/core_cm4.h file
 
-       // PERSONALIZA AQUÍ EL TIEMPO (en milisegundos aproximados)
-       delay_ms(2000); // 500 ms encendido, 500 ms apagado (Parpadeo a  1Hz)
-        }
-    }
+	TIM3->CR1 &= ~(TIM_CR1_DIR);		// set as upcounter
+	TIM3->CR1 &= ~(TIM_CR1_ARPE);		// clean arr preload
+	TIM3->CR1 |= (TIM_CR1_ARPE);		// set arr preload
+	TIM3->CR1 &= ~(TIM_CR1_CEN);		// clean timer enable
+	TIM3->CR1 |= (TIM_CR1_CEN);			// set timer enable
+}
 
+void TIM3_IRQHandler(void){
+	// verify which flag is up for the interruption
+	if (TIM3->SR && TIM_SR_UIF){
+		changeState();					// change the states of the stop light
+		TIM3->SR &= ~(TIM_SR_UIF);		// clean flag
+	}
+}
 
-
+void changeState(void){
+	switch (state) {
+		case GREEN:
+			GPIOC->ODR |= GPIO_ODR_OD8;
+			GPIOC->ODR &= ~(GPIO_ODR_OD6);
+			GPIOC->ODR &= ~(GPIO_ODR_OD5);
+			state = BLUE;
+			break;
+		case BLUE:
+			GPIOC->ODR &= ~GPIO_ODR_OD8;
+			GPIOC->ODR |= (GPIO_ODR_OD6);
+			GPIOC->ODR &= ~(GPIO_ODR_OD5);
+			state = RED;
+			break;
+		case RED:
+			GPIOC->ODR &= ~GPIO_ODR_OD8;
+			GPIOC->ODR &= ~(GPIO_ODR_OD6);
+			GPIOC->ODR |= (GPIO_ODR_OD5);
+			state = GREEN;
+			break;
+		default:
+			break;
+	}
+}
